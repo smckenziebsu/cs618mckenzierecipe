@@ -1,11 +1,5 @@
-
-import mongoose from 'mongoose'
 import { describe, expect, test, beforeEach } from '@jest/globals'
 import {
-  createPost,
-  listAllPosts,
-  listPostsByAuthor,
-  listPostsByTag,
   getPostById,
   updatePost,
   deletePost,
@@ -84,9 +78,8 @@ describe('deleting posts', () => {
   })
 })
 describe('listing posts', () => {
- 
+  
 })
 describe('creating posts', () => {
   
 })
- 
