@@ -1,14 +1,15 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useAuth } from '../contexts/AuthContext.jsx'
 import { createPost } from '../api/posts.js'
 export function CreatePost() {
   const [title, setTitle] = useState('')
-  const [token] = useAuth()
   const [contents, setContents] = useState('')
+  const [token] = useAuth()
+  // REMOVE author
   const queryClient = useQueryClient()
   const createPostMutation = useMutation({
-    mutationFn: () => createPost(token, { title, contents }),
+    mutationFn: () => createPost(token, { title, contents }), // REMOVE AUTHOR
     onSuccess: () => queryClient.invalidateQueries(['posts']),
   })
   const handleSubmit = (e) => {
@@ -29,17 +30,7 @@ export function CreatePost() {
         />
       </div>
       <br />
-      <div>
-        <label htmlFor='create-title'>Title: </label>
-        <input
-          type='text'
-          name='create-title'
-          id='create-title'
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-        />
-      </div>
-      <br />
+
       <textarea
         value={contents}
         onChange={(e) => setContents(e.target.value)}
@@ -48,8 +39,8 @@ export function CreatePost() {
       <br />
       <input
         type='submit'
-        value={createPostMutation.isPending ? 'Creating...' : 'Create'}
-        disabled={!title || createPostMutation.isPending}
+        value={createPostMutation.isPending ? 'Creating....' : 'Create'}
+        disabled={!title}
       />
       {createPostMutation.isSuccess ? (
         <>
