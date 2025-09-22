@@ -8,4 +8,4 @@ const postSchema = new Schema(
   },
   { timestamps: true },
 )
-export const Post = mongoose.model('post', postSchema)
+export const Recipe = mongoose.model('recipe', recipeSchema)
