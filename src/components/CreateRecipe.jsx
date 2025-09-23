@@ -1,11 +1,12 @@
 import { useState } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useAuth } from '../contexts/AuthContext.jsx'
-import { createPost } from '../api/recipes.js'
+import { createRecipe } from '../api/recipes.js'
 
 export function CreateRecipe() {
   const [title, setTitle] = useState('')
-  const [contents, setContents] = useState('')
+  const [ingredients, setIngredients] = useState('')
+  const [imageURL, setImageURL] = useState('')
   const [token] = useAuth()
 
   const queryClient = useQueryClient()
@@ -14,6 +15,7 @@ export function CreateRecipe() {
       createRecipe(token, {
         title,
         ingredients: ingredients.split(',').map((i) => i.trim()),
+        imageURL,
       }),
     onSuccess: () => queryClient.invalidateQueries(['recipes']),
   })
@@ -36,23 +38,41 @@ export function CreateRecipe() {
         />
       </div>
       <br />
-      <br />
-      <br />
-      <label htmlfFor="create-ingredients">Ingreients (comma seperated): </label>
+      <div>
+      <label htmlFor="create-ingredients">Ingredients (comma seperated): </label>
       <input
         type='text'
-        name="create-title"
-        id="create-title"
+        name="create-ingredients"
+        id="create-ingredients"
         value={ingredients}
         onChange={(e) => setIngredients(e.target.value)}
         placeholder="e.g. chicken, rice"
       />
-
+      </div>
+      <br />
       
-      {createPostMutation.isSuccess ? (
+      <div>
+        <label htmlFor="create-imageURL"> Image URL: </label>
+        <input
+        type="text"
+          name="create-imageURL"
+          id="create-imageURL"
+          value={imageURL}
+          onChange={(e) => setImageURL(e.target.value)}
+          placeholder="http://example.com/food.jpg"
+        />
+      </div>
+      <br />
+
+      <input
+        type="submit"
+        value={createRecipeMutation.isPending ? 'Creating...' : 'Create Recipe'}
+        disabled={!title}
+      />
+      {createRecipeMutation.isSuccess ? (
         <>
           <br />
-          Post created successfully!
+          Recipe created successfully!
         </>
       ) : null}
     </form>
