@@ -1,14 +1,17 @@
 import PropTypes from 'prop-types'
 import { User } from './User.jsx'
+import {useQuery} from '@tanstack/react-query'
+import { getRecipes } from '../api/recipes.js'
+
 export function Recipe ({ title, ingredients, imageURL, author: userId }) {
   return (
     <article>
       <h3>{title}</h3>
 
-      {/* Show image if provided*/}
+      
       {imageURL && <img src={imageURL} alt={title} style={{ maxWidth: '300px' }} />}
       
-       {/* Show ingredients if provided */}
+       
       {ingredients && ingredients.length > 0 && (
         <ul>
           {ingredients.map((ingredient, idx) => (
@@ -31,4 +34,25 @@ Recipe.propTypes = {
   ingredients: PropTypes.arrayOf(PropTypes.string),
   imageURL: PropTypes.string,
   author: PropTypes.string
+}
+
+export function RecipeList(){
+  const {data: recipes = [], isLoading, isError} = useQuery({
+    queryKey: ['recipes'],
+    queryFn: getRecipes,
+  })
+
+  if (isLoading) return <p>Loading recipes..</p>
+
+  return(
+    <div>
+      {recipes.length === 0 ? (
+        <p>No recipes</p>
+      ):(
+        recipes.map((r) => (
+          <Recipe key={r._id} {...r} />
+        ))
+      )}
+    </div>
+  )
 }
