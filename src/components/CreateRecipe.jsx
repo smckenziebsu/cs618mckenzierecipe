@@ -5,7 +5,7 @@ import { createRecipe } from '../api/recipes.js'
 
 export function CreateRecipe() {
   const [title, setTitle] = useState('')
-  const [ingredients, setIngredients] = useState('')
+  const [contents, setContents] = useState('')
   const [imageURL, setImageURL] = useState('')
   const [token] = useAuth()
 
@@ -14,8 +14,9 @@ export function CreateRecipe() {
        mutationFn: () =>
       createRecipe(token, {
         title,
-        ingredients: ingredients.split(',').map((i) => i.trim()),
+        contents,
         imageURL,
+        
       }),
     onSuccess: () => queryClient.invalidateQueries(['recipes']),
   })
@@ -39,15 +40,16 @@ export function CreateRecipe() {
       </div>
       <br />
       <div>
-      <label htmlFor="create-ingredients">Ingredients (comma seperated): </label>
-      <input
-        type='text'
-        name="create-ingredients"
-        id="create-ingredients"
-        value={ingredients}
-        onChange={(e) => setIngredients(e.target.value)}
-        placeholder="e.g. chicken, rice"
+      <label htmlFor="create-contents">Contents: </label>
+      <textarea
+        name="create-contents"
+        id="create-contents"
+        value={contents}
+        onChange={(e) => setContents(e.target.value)}
+        placeholder="e.g. mix flour, sugar, and eggs..."
       />
+      <br />
+    
       </div>
       <br />
       
@@ -67,7 +69,7 @@ export function CreateRecipe() {
       <input
         type="submit"
         value={createRecipeMutation.isPending ? 'Creating...' : 'Create Recipe'}
-        disabled={!title}
+        disabled={!title || !contents}
       />
       {createRecipeMutation.isSuccess ? (
         <>

@@ -3,7 +3,7 @@ import { User } from './User.jsx'
 import {useQuery} from '@tanstack/react-query'
 import { getRecipes } from '../api/recipes.js'
 
-export function Recipe ({ title, ingredients, imageURL, author: userId }) {
+export function Recipe ({ title, contents, imageURL, author: userId }) {
   return (
     <article>
       <h3>{title}</h3>
@@ -12,14 +12,8 @@ export function Recipe ({ title, ingredients, imageURL, author: userId }) {
       {imageURL && <img src={imageURL} alt={title} style={{ maxWidth: '300px' }} />}
       
        
-      {ingredients && ingredients.length > 0 && (
-        <ul>
-          {ingredients.map((ingredient, idx) => (
-            <li key={idx}>{ingredient}</li>
-          ))}
-        </ul>
-      )}
-
+      {contents && <p>{contents}</p>}
+       
          {userId && (
         <em>
           <br />
@@ -31,7 +25,7 @@ export function Recipe ({ title, ingredients, imageURL, author: userId }) {
 }
 Recipe.propTypes = {
   title: PropTypes.string.isRequired,
-  ingredients: PropTypes.arrayOf(PropTypes.string),
+  contents: PropTypes.string,
   imageURL: PropTypes.string,
   author: PropTypes.string
 }
