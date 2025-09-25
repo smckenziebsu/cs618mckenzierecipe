@@ -46,7 +46,7 @@ export function CreateRecipe() {
         id="create-contents"
         value={contents}
         onChange={(e) => setContents(e.target.value)}
-        placeholder="e.g. mix flour, sugar, and eggs..."
+        
       />
       <br />
     
@@ -61,7 +61,7 @@ export function CreateRecipe() {
           id="create-imageURL"
           value={imageURL}
           onChange={(e) => setImageURL(e.target.value)}
-          placeholder="http://example.com/food.jpg"
+          
         />
       </div>
       <br />
