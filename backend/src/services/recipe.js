@@ -1,11 +1,11 @@
 import { Recipe } from '../db/models/recipe.js'
 import { User } from '../db/models/user.js'
 
-export async function createRecipe(userId, { title, ingredients, imageURL, tags }) {
+export async function createRecipe(userId, { title, contents, imageURL, tags }) {
   const recipe = new Recipe({ 
     title, 
     author: userId, 
-    ingredients, 
+    contents, 
     imageURL, 
     tags 
   });

@@ -6,10 +6,10 @@ import {
   updateRecipe,
   deleteRecipe,
   getRecipeById,
-} from '../services/recipes.js'
+} from '../services/recipe.js'
 import { requireAuth } from '../middleware/jwt.js'
 
-export function recipesRoutes(app) {
+export function recipeRoutes(app) {
   app.get('/api/v1/recipes', async (req, res) => {
     const { sortBy, sortOrder, author, tag } = req.query
     const options = { sortBy, sortOrder }

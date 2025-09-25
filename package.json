@@ -12,9 +12,12 @@
   },
   "dependencies": {
     "@tanstack/react-query": "^5.12.2",
+    "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
+    "jsonwebtoken": "^9.0.2",
     "jwt-decode": "^4.0.0",
     "mongodb": "^6.3.0",
+    "mongoose": "^8.18.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.21.0"
