@@ -31,7 +31,7 @@ Recipe.propTypes = {
 }
 
 export function RecipeList(){
-  const {data: recipes = [], isLoading, isError} = useQuery({
+  const {data: recipes = [], isLoading,} = useQuery({
     queryKey: ['recipes'],
     queryFn: getRecipes,
   })
