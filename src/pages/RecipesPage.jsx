@@ -1,4 +1,4 @@
-import { RecipeList } from '../components/Recipe.jsx'
+import { RecipeList } from '../components/Recipes.jsx'
 import { CreateRecipe } from '../components/CreateRecipe.jsx'
 import { Header } from '../components/Header.jsx'
 import { getRecipes } from '../api/recipes.js'
