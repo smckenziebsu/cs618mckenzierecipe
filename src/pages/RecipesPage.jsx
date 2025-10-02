@@ -1,27 +1,55 @@
-import { RecipeList } from '../components/Recipes.jsx'
-import { CreateRecipe } from '../components/CreateRecipe.jsx'
-import { Header } from '../components/Header.jsx'
+import { useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
 import { getRecipes } from '../api/recipes.js'
-import {useQuery} from '@tanstack/react-query'
+
+import { Header } from '../components/Header.jsx'
+import { CreateRecipe } from '../components/CreateRecipe.jsx'
+import { RecipeList } from '../components/RecipeList.jsx'
+import { RecipeFilter } from '../components/RecipeFilter.jsx'
+import { RecipeSorting } from '../components/RecipeSorting.jsx'
 
 export function RecipesPage() {
-  const recipesQuery = useQuery({
+  const { data: recipes = [], isLoading } = useQuery({
     queryKey: ['recipes'],
     queryFn: getRecipes,
   })
 
-  const recipes = recipesQuery.data ?? []
+  const [filterValue, setFilterValue] = useState('')
+  const [sortOrder, setSortOrder] = useState('ascending')
+
+  if (isLoading) return <p>Loading recipes...</p>
+
+  let filtered = recipes.filter((r) =>
+    r.title.toLowerCase().includes(filterValue.toLowerCase())
+  )
+
+  let sorted = [...filtered].sort((a, b) =>
+    sortOrder === 'ascending'
+      ? a.title.localeCompare(b.title)
+      : b.title.localeCompare(a.title)
+  )
 
   return (
     <div style={{ padding: 8 }}>
       <Header />
-       <br />
-        <br />
       <CreateRecipe />
-      <br />
       <hr />
       <h2>All Recipes</h2>
-      <RecipeList recipes={recipes}/>
-      </div>
+
+      <RecipeFilter
+        field="title"
+        value={filterValue}
+        onChange={setFilterValue}
+      />
+      <RecipeSorting
+        fields={['title']}
+        value="title"
+        onChange={() => {}}
+        orderValue={sortOrder}
+        onOrderChange={setSortOrder}
+      />
+
+      <RecipeList recipes={sorted} />
+    </div>
   )
 }

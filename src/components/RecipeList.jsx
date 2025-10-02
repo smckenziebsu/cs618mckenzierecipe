@@ -1,6 +1,6 @@
 import { Fragment } from 'react'
 import PropTypes from 'prop-types'
-import { Recipe } from './Recipe.jsx'
+import { Recipe } from './Recipes.jsx'
 export function RecipeList({ recipes = [] }) {
   return (
     <div>
