@@ -12,7 +12,9 @@ export function Recipe ({ title, contents, imageURL, author: userId }) {
       {imageURL && <img src={imageURL} alt={title} style={{ maxWidth: '300px' }} />}
       
        
-      {contents && <p>{contents}</p>}
+      {contents && (
+      <p style={{ whiteSpace: "pre-line" }}>{contents}</p>
+      )}
        
          {userId && (
         <em>
