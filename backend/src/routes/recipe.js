@@ -8,6 +8,7 @@ import {
   getRecipeById,
 } from '../services/recipe.js'
 import { requireAuth } from '../middleware/jwt.js'
+import { Recipe } from '../db/models/recipe.js'
 
 export function recipeRoutes(app) {
   app.get('/api/v1/recipes', async (req, res) => {
@@ -67,6 +68,42 @@ export function recipeRoutes(app) {
     } catch (err) {
       console.error('error deleting recipe', err)
       return res.status(500).end()
+    }
+  })
+
+   app.get('/api/v1/recipes/top', async (req, res) => {
+    try {
+      const topRecipes = await Recipe.aggregate([
+        { $addFields: { likesCount: { $size: '$likes' } } },
+        { $sort: { likesCount: -1 } },
+        { $limit: 10 },
+      ])
+      res.json(topRecipes)
+    } catch (err) {
+      console.error('error fetching top recipes', err)
+      res.status(500).json({ error: 'Failed to fetch top recipes' })
+       }
+  })
+  app.post('/api/v1/recipes/:id/like', requireAuth, async (req, res) => {
+    try {
+      const recipe = await Recipe.findById(req.params.id)
+      if (!recipe) {
+        return res.status(404).json({ error: 'Recipe not found' })
+      }
+
+      
+      if (!recipe.likes.includes(req.auth.sub)) {
+        recipe.likes.push(req.auth.sub)
+        await recipe.save()
+      }
+
+      res.json({
+        id: recipe._id,
+        likesCount: recipe.likes.length,
+      })
+    } catch (err) {
+      console.error('error liking recipe', err)
+      res.status(500).json({ error: 'Failed to like recipe' })
     }
   })
 }
