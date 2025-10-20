@@ -31,6 +31,22 @@ export function recipeRoutes(app) {
       return res.status(500).end()
     }
   })
+
+  app.get('/api/v1/recipes/top', async (req, res) => {
+    try {
+      const topRecipes = await Recipe.aggregate([
+        { $addFields: { likesCount: { $size: { $ifNull: ['$likes', []] } } } },
+        { $match: { likesCount: { $gt: 0 } } },
+        { $sort: { likesCount: -1 } },
+        { $limit: 10 },
+      ])
+      res.json(topRecipes)
+    } catch (err) {
+      console.error('error fetching top recipes', err)
+      res.status(500).json({ error: err.message })
+    }
+  })
+
   app.get('/api/v1/recipes/:id', async (req, res) => {
     const { id } = req.params
     try {
@@ -42,6 +58,7 @@ export function recipeRoutes(app) {
       return res.status(500).end()
     }
   })
+
   app.post('/api/v1/recipes', requireAuth, async (req, res) => {
     try {
       const recipe = await createRecipe(req.auth.sub, req.body)
@@ -51,6 +68,7 @@ export function recipeRoutes(app) {
       return res.status(500).end()
     }
   })
+
   app.patch('/api/v1/recipes/:id', requireAuth, async (req, res) => {
     try {
       const recipe = await updateRecipe(req.auth.sub, req.params.id, req.body)
@@ -60,6 +78,7 @@ export function recipeRoutes(app) {
       return res.status(500).end()
     }
   })
+
   app.delete('/api/v1/recipes/:id', requireAuth, async (req, res) => {
     try {
       const { deletedCount } = await deleteRecipe(req.auth.sub, req.params.id)
@@ -71,36 +90,16 @@ export function recipeRoutes(app) {
     }
   })
 
-  app.get('/api/v1/recipes/top', async (req, res) => {
-    try {
-      const topRecipes = await Recipe.aggregate([
-        {
-          $addFields: {
-            likesCount: { $size: { $ifNull: ['$likes', []] } },
-          },
-        },
-        { $sort: { likesCount: -1, createdAt: -1 } },
-        { $limit: 10 },
-      ])
-
-      res.json(topRecipes)
-    } catch (err) {
-      console.error('Error fetching top recipes:', err)
-      res.status(500).json({ error: 'Failed to fetch top recipes' })
-    }
-  })
   app.post('/api/v1/recipes/:id/like', requireAuth, async (req, res) => {
     try {
       const recipe = await Recipe.findById(req.params.id)
       if (!recipe) {
         return res.status(404).json({ error: 'Recipe not found' })
       }
-
       if (!recipe.likes.includes(req.auth.sub)) {
         recipe.likes.push(req.auth.sub)
         await recipe.save()
       }
-
       res.json({
         id: recipe._id,
         likesCount: recipe.likes.length,
