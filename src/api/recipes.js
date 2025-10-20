@@ -1,3 +1,5 @@
+import { isMutationOperation } from "@apollo/client/utilities"
+
 export const getRecipes = async (queryParams) => {
   const res = await fetch(
     `${import.meta.env.VITE_BACKEND_URL}/api/v1/recipes?` +
@@ -33,5 +35,15 @@ export const likeRecipe = async (token, recipeId) => {
   if (!res.ok) {
     throw new Error('Failed to like recipe')
   }
+  return await res.json()
+}
+
+export const getTopRecipes = async () => {
+  const res = await fetch(`${import.meta.env.VITE.BACKEND_URL}/api/v1/recipes/top`)
+
+  if (!res.ok) {
+    throw new Error ('Failed to fetch top recipes')
+  }
+
   return await res.json()
 }
