@@ -54,7 +54,7 @@ export function recipeRoutes(app) {
   app.patch('/api/v1/recipes/:id', requireAuth, async (req, res) => {
     try {
       const recipe = await updateRecipe(req.auth.sub, req.params.id, req.body)
-      return res.json(recipe);
+      return res.json(recipe)
     } catch (err) {
       console.error('error updating recipe', err)
       return res.status(500).end()
@@ -71,18 +71,23 @@ export function recipeRoutes(app) {
     }
   })
 
-   app.get('/api/v1/recipes/top', async (req, res) => {
+  app.get('/api/v1/recipes/top', async (req, res) => {
     try {
       const topRecipes = await Recipe.aggregate([
-        { $addFields: { likesCount: { $size: '$likes' } } },
-        { $sort: { likesCount: -1 } },
+        {
+          $addFields: {
+            likesCount: { $size: { $ifNull: ['$likes', []] } },
+          },
+        },
+        { $sort: { likesCount: -1, createdAt: -1 } },
         { $limit: 10 },
       ])
+
       res.json(topRecipes)
     } catch (err) {
-      console.error('error fetching top recipes', err)
+      console.error('Error fetching top recipes:', err)
       res.status(500).json({ error: 'Failed to fetch top recipes' })
-       }
+    }
   })
   app.post('/api/v1/recipes/:id/like', requireAuth, async (req, res) => {
     try {
@@ -91,7 +96,6 @@ export function recipeRoutes(app) {
         return res.status(404).json({ error: 'Recipe not found' })
       }
 
-      
       if (!recipe.likes.includes(req.auth.sub)) {
         recipe.likes.push(req.auth.sub)
         await recipe.save()
