@@ -29,8 +29,8 @@ export function RecipesPage() {
   let sorted = [...filtered].sort((a, b) => {
     if (sortField === 'likes') {
       return sortOrder === 'ascending'
-        ? (a.likes?.length || 0) - (b.likes?.length || 0)
-        : (b.likes?.length || 0) - (a.likes?.length || 0)
+        ? (b.likes?.length || 0) - (a.likes?.length || 0)
+        : (a.likes?.length || 0) - (b.likes?.length || 0)
     } else {
       return sortOrder === 'ascending'
         ? a.title.localeCompare(b.title)
